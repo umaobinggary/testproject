@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>用户登录</title>
+        <link href="../static/bootstrap-3.3.7-dist/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            /*web background*/
+            .container{
+                display:table;
+                height:100%;
+            }
+            .row{
+                display: table-cell;
+                vertical-align: middle;
+            }
+            /* centered columns styles */
+            .row-centered {
+                text-align:center;
+            }
+            .col-centered {
+                display:inline-block;
+                float:none;
+                text-align:left;
+                margin-right:-4px;
+            }
+        </style>
+    </head>
+</html>
+{% block content %}
+<div class="container">
+    <div class="row row-centered">
+        <div class="well col-md-6 col-centered">
+                <form>
+                    <b><h1  class="heading" style="color:#336666">用户登录</h1></b>
+                    <br>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username" placeholder="用户名">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" class="form-control" id="password" placeholder="密　码">
+                        <i class="fa fa-lock"></i>
+                        <a href="#" class="fa fa-question-circle"></a>
+                    </div>
+                    <div class="form-group">
+                        <span style="color:#FF0000" id="msg"></span>
+                        <button type="button" class="btn btn-default" onclick="login()">登录</button>
+                        <button type="button" class="btn btn-default"
+                                onclick="window.location.href='{{ url_for("user.register")}}'">注册
+                        </button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="../static/jquery-1.12.4.js"></script>
+    <script src="../static/bootstrap-3.3.7-dist/dist/js/bootstrap.min.js"></script>
+    <script>
+        function login() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            $.ajax(
+                {
+                    url: "{{ url_for("user.login")}}",
+                    data: {"username": username, "password": password},
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function () {
+                        return true;
+                    },
+                    success: function (data) {
+                        if (data["code"] == '1') {
+                            window.location.href = '{{ url_for("index")}}';
+
+                        } else {
+                            alert("Error：" + data["msg"]);
+                        }
+
+                    },
+                    error: function () {
+                        alert('请求出错');
+                    },
+                    complete: function () {
+                        // $('#tips').hide();
+                    }
+                }
+            )
+        }
+    </script>
+
+{%- endblock scripts %}
